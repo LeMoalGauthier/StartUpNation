@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Génération en cours...</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function checkProgress() {
+            fetch(`/check_status/${encodeURIComponent("{{ title }}")}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ready') {
+                        window.location.href = `/display/${encodeURIComponent("{{ title }}")}`;
+                    } else {
+                        setTimeout(checkProgress, 3000);
+                    }
+                });
+        }
+        window.onload = checkProgress;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Génération de "{{ title }}" en cours</h1>
+        <div class="loading-spinner"></div>
+        <p>Temps estimé : {{ estimated_time }} secondes</p>
+    </div>
+</body>
+</html>

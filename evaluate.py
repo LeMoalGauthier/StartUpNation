@@ -105,7 +105,7 @@ def evaluate_images(output_dir):
                 })
     
     # Save results to CSV
-    csv_file = "evaluation.csv"
+    csv_file = "csv/evaluation.csv"
     with open(csv_file, mode="w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["Folder", "Image", "Prompt", "FID", "CLIP"])
         writer.writeheader()

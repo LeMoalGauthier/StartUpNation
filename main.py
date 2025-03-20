@@ -1,27 +1,64 @@
 import pandas as pd
 import torch
-from PIL import Image, ImageDraw, ImageFont
 from diffusers import StableDiffusionPipeline
 from transformers import pipeline
 import os
+import random
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 torch.cuda.empty_cache()
 torch.backends.cuda.matmul.allow_tf32 = True
 
-def get_movie_data(path: str = "imdb_top_1000.csv", title=None) -> dict:
-    """Récupère les données d'un film aléatoire avec gestion d'erreur améliorée"""
+
+GENRES = ["Sci-Fi", "Horror", "Fantasy", "Drama", "Thriller", "Comedy", "Adventure", "Mystery"]
+
+SYNOPSIS_TEMPLATES = [
+    "A {genre} story where {protagonist} must {challenge}, leading to unexpected consequences.",
+    "In a {genre} world, {protagonist} embarks on a journey to {goal}, facing {obstacle}.",
+    "{protagonist} finds themselves in the midst of {situation}, changing their fate forever."
+]
+
+CHARACTERS = [
+    "a rogue scientist", "a lost astronaut", "a haunted detective", "a rebellious AI",
+    "a forgotten warrior", "a cursed artist", "an exiled prince", "a time traveler"
+]
+
+CHALLENGES = [
+    "uncover a hidden truth", "fight against an unknown force", "survive in a dystopian world",
+    "solve an ancient mystery", "prevent an apocalypse", "escape from a digital prison"
+]
+
+
+def get_movie_data(path: str = "csv/imdb_top_1000.csv", title=None) -> dict:
+    """Récupère les données d'un film ou génère un film fictif si le titre est absent."""
     try:
         df = pd.read_csv(path, sep=",").dropna(subset=['Overview', 'Genre', 'Series_Title'])
         if title:
-            movie = df[df['Series_Title'] == title].iloc[0]
-        else:
-            movie = df.sample(n=1).iloc[0]
+            movie = df[df['Series_Title'].str.lower() == title.lower()]
+            if not movie.empty:
+                movie = movie.iloc[0]
+                return {
+                    "Series_Title": movie["Series_Title"],
+                    "Genre": movie["Genre"],
+                    "Overview": movie["Overview"][:200]
+                }
+            else:
+                print(f"Titre '{title}' introuvable. Génération d'un film fictif...")
+        
+        # Générer un film fictif
+        genre = random.choice(GENRES)
+        protagonist = random.choice(CHARACTERS)
+        challenge = random.choice(CHALLENGES)
+        overview = random.choice(SYNOPSIS_TEMPLATES).format(
+            genre=genre, protagonist=protagonist, challenge=challenge, goal=challenge, 
+            obstacle="a deadly adversary", situation="a war between two dimensions"
+        )
+
         return {
-            "Series_Title": movie["Series_Title"],
-            "Genre": movie["Genre"],
-            "Overview": movie["Overview"][:200]  # Limite la longueur
+            "Series_Title": title if title else f"Unknown {genre} Movie",
+            "Genre": genre,
+            "Overview": overview
         }
     except Exception as e:
         print(f"Erreur de chargement des données: {e}")
@@ -160,5 +197,5 @@ def pipeline(movie_data=None, title: str = None):
 
 # Exemples d'utilisation :
 if __name__ == "__main__":
-    pipeline(title="The Pursuit of Happyness")
-    pipeline(movie_data={"Series_Title": "Inception", "Genre": "Sci-Fi", "Overview": "A thief who enters dreams."})
+    pipeline(title="AI Invansion")
+    #pipeline(movie_data={"Series_Title": "Inception", "Genre": "Sci-Fi", "Overview": "A thief who enters dreams."})

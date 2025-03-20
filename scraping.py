@@ -60,7 +60,7 @@ def scrape_imdb_top_movies(max_movies=250):
 if __name__ == "__main__":
     try:
         df = scrape_imdb_top_movies(max_movies=250)
-        df.to_csv("imdb_movies.csv", index=False)
+        df.to_csv("csv/imdb_movies.csv", index=False)
         print("Sauvegarde réussie !")
     except Exception as e:
         print(f"Erreur : {e}")

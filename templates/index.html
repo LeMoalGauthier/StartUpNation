@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Poster Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Movie Poster</h1>
+        <form method="POST">
+            <input type="text" name="title" placeholder="Enter movie title">
+            <input type="text" name="genre" placeholder="Enter genre (optional)">
+            <textarea name="overview" placeholder="Enter summary/overview (optional)"></textarea>
+            <button type="submit">Generate</button>
+            <p class="hint">Leave fields empty for random generation</p>
+        </form>
+    </div>
+</body>
+</html>
