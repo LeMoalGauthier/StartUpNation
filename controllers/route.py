@@ -1,7 +1,8 @@
 from controllers.movieApp import MovieApp
 from flask import Flask, render_template, request, jsonify
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'))
 movie_app = MovieApp()
 
 @app.route('/')
