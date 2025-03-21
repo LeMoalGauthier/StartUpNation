@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }} - Evaluation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Rate {{ title }}</h1>
+        <div class="poster-container">
+            {% for poster in poster_paths %}
+                <img src="{{ poster }}" alt="Generated Poster">
+            {% endfor %}
+        </div>
+        
+        
+        <form method="POST" action="{{ url_for('submit_rating', title=title) }}">
+            {% for criterion in criteria %}
+            <div class="rating-group">
+                <label>{{ criterion }}</label>
+                <select name="{{ criterion }}">
+                    {% for i in range(6) %}
+                    <option value="{{ i }}">{{ i }} stars</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+            <button type="submit">Submit Rating</button>
+        </form>
+    </div>
+</body>
+</html>
