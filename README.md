@@ -1,4 +1,4 @@
-# Moviemind
+# MovieMind
 
 ## Installation et exécution
 
